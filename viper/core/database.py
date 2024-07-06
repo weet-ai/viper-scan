@@ -18,14 +18,6 @@ from pyspark.sql.types import (
 from typing import List, LiteralString
 import pathlib
 
-# Initialize a Spark session
-spark = SparkSession.builder \
-    .appName("OSVDatabase") \
-    .config("spark.sql.shuffle.partitions", "200") \
-    .config("spark.executor.memory", "4g") \
-    .config("spark.driver.memory", "4g") \
-    .getOrCreate()
-
 
 @dataclass
 class OSVDatabase:
@@ -33,6 +25,17 @@ class OSVDatabase:
     cache_dir: str = ".viper_cache"
     num_partitions: int = 10
     partition_columns: List[LiteralString] = ["package_name", "versions"]
+
+    def __init__(self, **kwargs):
+        super().__init__(kwargs)
+        # Initialize a Spark session
+        self.spark = SparkSession.builder \
+            .appName("OSVDatabase") \
+            .config("spark.sql.shuffle.partitions", "200") \
+            .config("spark.executor.memory", "4g") \
+            .config("spark.driver.memory", "4g") \
+            .getOrCreate()
+
 
     def download(self, cache_dir: str = ".viper_cache"):
 
@@ -65,7 +68,7 @@ class OSVDatabase:
             ])), True)
         ])
 
-        df = spark.read.option("multiLine", "true").schema(schema).json(self.cache_dir)
+        df = self.spark.read.option("multiLine", "true").schema(schema).json(self.cache_dir)
         # Select relevant fields, handling nested structures appropriately
         selected_df = df.select(
             F.col("id"),
