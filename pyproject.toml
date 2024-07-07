@@ -16,6 +16,7 @@ pandas = "^2.2.2"
 numpy = "<3.0.0"
 packaging = "^24.1"
 click = "^8.1.7"
+transformers = "4.40.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"
