@@ -1,6 +1,6 @@
-from viper.core.database import OpenSourceVulnerabilities
+from viper.core.database import OSVDatabase
 
 def test_download():
 
-    vuln = OpenSourceVulnerabilities()
-    vuln.download_dataset()
+    vuln = OSVDatabase()
+    vuln.download()

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from zipfile import ZipFile
 from io import BytesIO
 
@@ -24,10 +24,9 @@ class OSVDatabase:
 
     cache_dir: str = ".viper_cache"
     num_partitions: int = 10
-    partition_columns: List[LiteralString] = ["package_name", "versions"]
+    partition_columns: List[LiteralString] = field(default_factory=lambda: ["package_name", "versions"])
 
     def __init__(self, **kwargs):
-        super().__init__(kwargs)
         # Initialize a Spark session
         self.spark = SparkSession.builder \
             .appName("OSVDatabase") \
