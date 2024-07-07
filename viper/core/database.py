@@ -14,8 +14,8 @@ from pyspark.sql.types import (
     ArrayType,
     TimestampType
 )
+from pyspark.storagelevel import StorageLevel
 
-from typing import List, LiteralString
 import pathlib
 
 
@@ -69,6 +69,7 @@ class OSVDatabase:
         ])
 
         df = self.spark.read.option("multiLine", "true").schema(schema).json(self.cache_dir)
+
         # Select relevant fields, handling nested structures appropriately
         selected_df = df.select(
             F.col("id"),
