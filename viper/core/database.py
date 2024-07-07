@@ -92,7 +92,7 @@ class OSVDatabase:
 
         filtered_df = (
             exploded_df
-                .filter(F.col("versions").isNull() == False)
+                .filter(F.col("versions").isNull() is False)
                 .withColumn(
                     "versions",
                     F.explode(F.col("versions"))
