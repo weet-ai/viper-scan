@@ -1,6 +1,6 @@
-version: 1
+version: 2
 updates:
   - package-ecosystem: "pip"
-    directory: "viper"
+    directory: "./"
     schedule:
       interval: "weekly"
