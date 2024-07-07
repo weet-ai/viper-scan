@@ -24,10 +24,11 @@ class OSVDatabase:
 
     cache_dir: str = ".viper_cache"
     num_partitions: int = 10
-    partition_columns: List[LiteralString] = field(default_factory=lambda: ["package_name", "versions"])
+    partition_columns: list = field(default_factory=[])
 
     def __init__(self, **kwargs):
-        # Initialize a Spark session
+
+        self.partition_columns = ["package_name", "versions"]
         self.spark = SparkSession.builder \
             .appName("OSVDatabase") \
             .config("spark.sql.shuffle.partitions", "200") \
@@ -92,7 +93,7 @@ class OSVDatabase:
 
         filtered_df = (
             exploded_df
-                .filter(F.col("versions").isNull() is False)
+                .filter(F.col("versions").isNull() == False)
                 .withColumn(
                     "versions",
                     F.explode(F.col("versions"))
