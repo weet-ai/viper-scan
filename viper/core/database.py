@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from zipfile import ZipFile
 from io import BytesIO
+from typing import List, LiteralString
+import os
+import pathlib
 
 import httpx
-from viper.config import OSV_DATASET_URL
-
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.types import (
@@ -15,12 +16,10 @@ from pyspark.sql.types import (
     TimestampType
 )
 
-from typing import List, LiteralString
-import pathlib
-
+DATASET_URL = os.getenv("DATASET_URL")
 
 @dataclass
-class OSVDatabase:
+class VulnerabilitiesDatabase:
 
     cache_dir: str = ".viper_cache"
     num_partitions: int = 10
@@ -39,7 +38,7 @@ class OSVDatabase:
 
     def download(self, cache_dir: str = ".viper_cache"):
 
-        response = httpx.get(OSV_DATASET_URL)
+        response = httpx.get(DATASET_URL)
         zip_file = ZipFile(BytesIO(response.content))
         zip_file.extractall(cache_dir)
 
