@@ -12,7 +12,10 @@ class EnvironmentScanner:
 
     def __init__(self, **kwargs):
         super().__init__(kwargs)
+
         # Initialize a Spark session
+        # TODO: move to a Singleton factory class
+        
         self.spark = SparkSession.builder \
             .appName("ViperScan") \
             .config("spark.sql.shuffle.partitions", "200") \
