@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from zipfile import ZipFile
 from io import BytesIO
 from typing import List, LiteralString
@@ -18,27 +17,33 @@ from pyspark.sql.types import (
 
 DATASET_URL = os.getenv("DATASET_URL")
 
-@dataclass
 class VulnerabilitiesDatabase:
 
-    cache_dir: str = ".viper_cache"
-    num_partitions: int = 10
-    partition_columns: List[LiteralString] = ["package_name", "versions"]
+    def __init__(
+        self,
+        dataset_url: str,
+        cache_dir: str = ".viper_cache",
+        num_partitions: int = 10,
+        partition_columns: List[LiteralString] = ["package_name", "versions"]
+    ):
 
-    def __init__(self, **kwargs):
-        super().__init__(kwargs)
         # Initialize a Spark session
         self.spark = SparkSession.builder \
-            .appName("OSVDatabase") \
+            .appName("ViperDatabase") \
             .config("spark.sql.shuffle.partitions", "200") \
             .config("spark.executor.memory", "4g") \
             .config("spark.driver.memory", "4g") \
             .getOrCreate()
+        
+        self.dataset_url = dataset_url
+        self.cache_dir = cache_dir
+        self.num_partitions = num_partitions
+        self.partition_columns = partition_columns
 
 
     def download(self, cache_dir: str = ".viper_cache"):
 
-        response = httpx.get(DATASET_URL)
+        response = httpx.get(self.dataset_url)
         zip_file = ZipFile(BytesIO(response.content))
         zip_file.extractall(cache_dir)
 

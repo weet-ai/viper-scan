@@ -14,7 +14,7 @@ class EnvironmentScanner:
         super().__init__(kwargs)
         # Initialize a Spark session
         self.spark = SparkSession.builder \
-            .appName("Read JSON Files") \
+            .appName("ViperScan") \
             .config("spark.sql.shuffle.partitions", "200") \
             .config("spark.executor.memory", "4g") \
             .config("spark.driver.memory", "4g") \
